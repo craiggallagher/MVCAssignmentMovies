@@ -1,0 +1,326 @@
+﻿ @model IEnumerable<MVCAssignmentMovies.Models.Movie>
+@using System.Data
+
+
+<div class="panel panel-info">
+        <div class="panel-heading" style="font-size:20px">
+       <h2>@ViewBag.PageTitle</h2>
+            </div>
+  
+
+<p>
+    @Html.ActionLink("Create New", "Create",null,new{@class = "btn btn-sm btn-primary"})
+</p>
+<table class=" table table-hover table-compresed table table-striped table table-bordered  ">
+    <tr>
+                <th>
+           <a class="btn btn-xs btn-info" href="@Url.Action("Index", new { sortOrder = @ViewBag.NameSort })">
+                        @if (ViewBag.NameSort == "name_asc")
+                        {
+                            <span class="glyphicon glyphicon-arrow-up" aria-hidden="true"></span>
+                        }
+                        else if (ViewBag.NameSort == "name_desc")
+                        {
+                            <span class="glyphicon glyphicon-arrow-down" aria-hidden="true"></span>
+                        
+                        }
+                        &nbsp;Movie Name
+                    </a>
+                    
+        </th>
+        <th style="text-align:center" >
+            @Html.DisplayNameFor(model => model.Rating)
+            
+        </th>
+        <th style="text-align:center" >
+            @Html.DisplayNameFor(model => model.genre )
+
+        </th>
+        <th style="text-align:center" >
+           @Html.DisplayNameFor(model => model.Actors)
+            @*@Html.ActionLink("No of Actors","Index", new{ sortOrder = @ViewBag.NoActors })
+                        @if (ViewBag.NoActors == "descNumber")
+                        {
+                            <span class="glyphicon glyphicon-arrow-up" aria-hidden="true"></span>
+                        }
+                        else if (ViewBag.NoActors == "ascNumber")
+                        {
+                            <span class="glyphicon glyphicon-arrow-down" aria-hidden="true"></span>
+                        
+                        }
+                        
+                    </@Html>*@
+        </th>
+        <th></th>
+    </tr>
+
+@foreach (var item in Model) {
+    <tr style="text-align:center" >
+        <td style="text-align:left">
+             <span id="summary" ('@item.MovieID')">@Html.DisplayFor(modelItem => item.MovieName)</span>
+           @*<div id="summary" style="height: 20px; width: 40px; display:block">Summary</div>*@
+            @*<div id="testtest" style="background-color: Red; height: 60px; width: 100px; display: inline-block;  display: none;">
+
+    </div> *@
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Rating)
+            
+               
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.genre)
+
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Actors.Count)
+        </td>
+        <td>
+            <span class="btn btn-success btn-sm" onclick="showActors('@item.MovieID')">Details</span>
+            <span class="btn btn-warning btn-sm" id="btnMovieEdit" onclick="editMovie('@item.MovieID')">Edit</span>
+          <span class="btn btn-danger btn-sm" id="btnMovieDelete" onclick="deleteMovie('@item.MovieID')">Delete</span>
+        </td>
+    </tr>
+}
+
+</table>
+    
+
+     <form id="EditActor" hidden="">
+                    <div class="form-group" style="margin-top: 10px">
+                        <input type="hidden" name="MovieID"><input type="hidden" name="MovieID">
+                        <input type="hidden" name="ActorName">
+                        <input type="hidden" name="age">
+                        <input type="submit" value="Save" class="btn btn-xs btn-success" style="margin-top: -5px;" />
+                        <input type="button" onclick="$('#EditActor').hide();" value="Cancel" class="btn btn-xs btn-warning" style="margin-top: -5px;" />
+                        <input type="text" name="ActorName" value="">
+                        <input type="text" name="age" value="">
+                        
+                    </div>
+                </form>
+ 
+</div>
+
+
+
+  <div id="Detail"></div>
+<div id="Delete"></div>
+<div id="Edit"></div>
+<div><span class="label label-primary" style="font-size:15px; margin-left:200px">Genre Split</span></div>
+<div>
+    
+        <canvas id="myChart" style="margin-left:100px"></canvas>
+    <div style="margin-left:220px"><h4 style="color:red"  >Action</h4>
+    <h4 style="color:#46BFBD"  >Comedy</h4>
+    <h4 style="color:#990033"  >Thriller</h4>
+    <h4 style="color:#FF9933"  >Horror</h4>
+    <h4 style="color:#000000"  >Crime</h4></div>
+    
+   
+
+    </div>
+@section scripts
+{
+    <script>
+        
+        
+        $(document).ready(function () {
+
+
+            $("#testtest").hide(function () {
+
+                $("#summary").hover(function () {
+                    $("#testtest").show(1000)
+                    $("#summary").mouseout(function () {
+                        $("#testtest").hide(1000)
+                    });
+                });
+            });
+        });
+        
+       
+        
+      
+       
+        $('#btnMovieDelete').click(function () {
+            toastr.error('Delete Movie');
+            
+        });
+        $('#btnMovieEdit').click(function () {
+            toastr.warning('Edit Movie');
+
+        });
+      
+
+        function showActors(movieID) {
+
+            $.ajax({
+                url: '@Url.Action("ActorsByID")',
+                data: { id: movieID },
+                success: function (data) {
+                    $('#Detail').hide();
+                    $('#Detail').html(data);
+                    $('#Detail').animate({
+                        opacity: 1,
+                        left: "+=50",
+                        height: "toggle"
+                    }, 3000, function() {
+                        // Animation complete.
+                    });
+
+                    $('#Edit').hide();
+                    $('#Delete').hide();
+                },
+                error: function (data) { $('#Details').html('<h3>Error</h3>'); }
+            });
+        }
+        function deleteMovie(DmovieID) {
+            $.ajax({
+                url: '@Url.Action("MoviesByID")',
+                data: { id: DmovieID },
+                success: function (data) {
+                    $('#Delete').hide();
+                    $('#Delete').html(data);
+                    $('#Delete').animate({
+                        opacity: 1,
+                        left: "+=50",
+                        height: "toggle"
+                    }, 3000, function () {
+                        // Animation complete.
+                    });
+                    $('#Detail').hide();
+                    $('#Edit').hide();
+                },
+            });
+        }
+       
+
+        function editMovie(EmovieID) {
+
+            $.ajax({
+                url: '@Url.Action("EditMoviesID")',
+                data: { id: EmovieID },
+                success: function (data) {
+                    $('#Edit').hide();
+                    $('#Edit').html(data);
+                    $('#Edit').animate({
+                        opacity: 1,
+                        left: "+=50",
+                        height: "toggle"
+                    }, 3000, function () {
+                        // Animation complete.
+                    });
+                    $('#Delete').hide();
+                    $('#Detail').hide();
+
+                },
+                error: function (data) { $('#Edits').html('<h3>Error</h3>'); }
+            });
+        }
+        function showEditActor(MovieID, ActorID, ActorName, age) {
+           
+                $('#EditActor').slideDown("fast");
+            $('#EditActor').show();
+            $('#EditActor :input[name="ActorID"]').val(ActorID);
+            $('#EditActor :input[name="MovieID"]').val(MovieID);
+            $('#EditActor :input[name="ActorName"]').val(ActorName);
+            $('#EditActor :input[name="age"]').val(age);
+            
+        }
+        $('#EditActor').submit(function () {
+            
+            $.ajax({
+                url: '@Url.Action("UpdateActor")',
+                type: "POST",
+                data: $(this).serialize(),
+                success: function () {
+                    $('#EditActor').hide();
+                    showActors($('#EditActor :input[name="MovieID"]').val()); // refresh the table of children
+                    toastr.info($('#EditActor :input[name="ActorName"]').val() + ' Updated');
+                },
+                error: function (data) {
+                    $('#Detail').html('<h3>Error in retrieval</h3>');
+                }
+                
+            });
+             return false;
+        });
+        $(function () {     
+            toastr.info('Movie List');
+
+            var ctx = $("#myChart").get(0).getContext("2d");
+         
+            // This will get the first returned node in the jQuery collection.
+            
+            var data = [
+    {
+        value: (@ViewBag.GenreAction),
+        color: "#F7464A",
+        highlight: "#FF5A5E",
+        label: "Red"
+    },
+    {
+        value: (@ViewBag.GenreComedy),
+        color: "#46BFBD",
+        highlight: "#5AD3D1",
+        label: "Green"
+    },
+    {
+        value:  (@ViewBag.GenreThriller),
+        color: "#990033",
+        highlight: "#FFC870",
+        label: "Yellow"
+    },
+      {
+          value:  (@ViewBag.GenreHorror),
+          color: "#FF9933",
+          highlight: "#FFC870",
+          label: "Black"
+      },
+       {
+           value:  (@ViewBag.GenreCrime),
+           color: "#000000",
+           highlight: "#FFC870",
+           label: "Yellow"
+       },
+            ];
+
+            var options =
+            {
+
+                //Boolean - Whether we should show a stroke on each segment
+                segmentShowStroke: true,
+
+                //String - The colour of each segment stroke
+                segmentStrokeColor: "#fff",
+
+                //Number - The width of each segment stroke
+                segmentStrokeWidth: 2,
+
+                //Number - The percentage of the chart that we cut out of the middle
+                percentageInnerCutout: 50, // This is 0 for Pie charts
+
+                //Number - Amount of animation steps
+                animationSteps: 100,
+
+                //String - Animation easing effect
+                animationEasing: "easeOutBounce",
+
+                //Boolean - Whether we animate the rotation of the Doughnut
+                animateRotate: true,
+
+                //Boolean - Whether we animate scaling the Doughnut from the centre
+                animateScale: false,
+
+                //String - A legend template
+                legendTemplate: "<ul class=\"<%=name.toLowerCase()%>-legend\"><% for (var i=0; i<segments.length; i++){%><li><span style=\"background-color:<%=segments[i].fillColor%>\"></span><%if(segments[i].label){%><%=segments[i].label%><%}%></li><%}%></ul>"
+
+            };
+            var myDoughnutChart = new Chart(ctx).Pie(data,options);
+          });
+
+      
+
+   
+    </script>
+}

@@ -1,0 +1,53 @@
+﻿@model MVCAssignmentMovies.Models.Movie
+
+@{
+    ViewBag.Title = "_EditMovies";
+}
+
+
+@using (Html.BeginForm()) {
+    @Html.ValidationSummary(true)
+
+      <div class="panel panel-warning">
+        <div class="panel-heading">
+       <h2>Movie</h2>
+            </div>
+        @Html.HiddenFor(model => model.MovieID)
+
+        <div class="form group col-xs-4">
+            @Html.LabelFor(model => model.MovieName)
+            @Html.TextBoxFor(model => model.MovieName, new {@class="form-control" })
+            @Html.ValidationMessageFor(model => model.MovieName)
+           
+        </div>
+
+        <div class="from group col-xs-4">
+            @Html.LabelFor(model => model.Rating)
+            @Html.TextBoxFor(model => model.Rating, new {@class="form-control" })
+            @Html.ValidationMessageFor(model => model.Rating)
+        </div>
+
+           <div class="form group col-xs-4">
+            @Html.LabelFor(model => model.genre)
+            @Html.DropDownListFor(model => model.genre, Enum.GetNames(typeof(MVCAssignmentMovies.Models.Genre)).Select(e => new SelectListItem { Text = e }), new {@class= "form-control" })
+                            
+            @Html.ValidationMessageFor(model => model.genre)
+          
+        </div>
+         
+     &nbsp&nbsp
+            <button class="btn btn-success"><span class="glyphicon glyphicon-ok"></span>Save</button>
+        
+          </div>
+          
+    
+ 
+}
+
+<div>
+    
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

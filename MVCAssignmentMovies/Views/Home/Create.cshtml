@@ -1,0 +1,53 @@
+﻿@model MVCAssignmentMovies.Models.Movie
+
+@{
+    ViewBag.Title = "Create";
+}
+
+
+
+@using (Html.BeginForm()) {
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary(true)
+   
+    <div class="panel panel-info">
+        <div class="panel-heading">
+       <div class="Lead">Movie</div> 
+           
+        </div>
+        <div class="row">
+        <div class="form group col-xs-4">
+            @Html.LabelFor(model => model.MovieName)   
+             @Html.TextBoxFor(model => model.MovieName, new { @class = "form-control" })
+            @Html.ValidationMessageFor(model => model.MovieName)
+        </div>
+
+        <div class="form group col-xs-4">
+            @Html.LabelFor(model => model.Rating)
+            @Html.TextBoxFor(model => model.Rating, new {@class= "form-control" })
+            @Html.ValidationMessageFor(model => model.Rating)
+        </div>
+
+         <div class="form group col-xs-4">
+            @Html.LabelFor(model => model.genre)
+            @Html.DropDownListFor(model => model.genre, Enum.GetNames(typeof(MVCAssignmentMovies.Models.Genre)).Select(e => new SelectListItem { Text = e }), new {@class= "form-control" })
+                            
+            @Html.ValidationMessageFor(model => model.genre)
+        </div>
+            </div>
+       
+
+        <p>
+              <button class="btn btn-success"><span class="glyphicon glyphicon-plus"></span>Create</button>
+        </p>
+         </div>
+
+}
+
+<div>
+    <a class =" btn btn-primary" href="@Url.Action("Index")"><span class=" glyphicon glyphicon-home"></span>&nbsp;Moive List</a>
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

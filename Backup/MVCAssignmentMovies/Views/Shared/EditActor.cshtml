@@ -1,0 +1,45 @@
+﻿@model MVCAssignmentMovies.Models.Actor
+
+@{
+    ViewBag.Title = "EditActor";
+}
+
+
+@using (Html.BeginForm()) {
+    @Html.ValidationSummary(true)
+
+      <div class="panel panel-warning">
+        <div class="panel-heading">
+       <h2>Actors</h2>
+            </div>
+
+              <div class="panel-body">
+        @Html.HiddenFor(model => model.MovieID)
+
+        <div class="form group col-xs-4">
+            @Html.LabelFor(model => model.ActorName)
+            @Html.TextBoxFor(model => model.ActorName, new {@class="form-control" })
+            @Html.ValidationMessageFor(model => model.ActorName)
+           
+        </div>
+
+        <div class="from group col-xs-4">
+            @Html.LabelFor(model => model.age)
+            @Html.TextBoxFor(model => model.age, new {@class="form-control" })
+            @Html.ValidationMessageFor(model => model.age)
+        </div>
+
+         
+            <button class="btn btn-success"><span class="glyphicon glyphicon-ok"></span>Save</button>
+        
+          </div>
+          </div>
+}
+
+<div>
+    
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}
